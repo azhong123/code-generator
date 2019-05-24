@@ -12,6 +12,7 @@
 6.  项目在使用MyBatis 时会自动生成xml，实体类，service、serviceImpl，controller。
 7.  项目在使用JPA 时会自动生成 实体类并添加注解，service、serviceImpl，controller。
 8.  代码生成：前后端代码的生成（java、html、xml、sql)支持CRUD下载 。
+9.  在生产实体类是默认会过滤掉 createBy、createTime、updateBy、updateTime、remark字段。
 
 
 ## 演示图
