@@ -1,0 +1,15 @@
+.index-radio-title {
+    width: 10%;
+    float: left;
+    position: relative;
+    padding-top: 6px;
+    padding-left: 15px;
+    line-height: 40px;
+}
+
+.generator-radio {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    width: 100%;
+}

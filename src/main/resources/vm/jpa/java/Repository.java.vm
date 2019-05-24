@@ -1,0 +1,50 @@
+package ${package}.mapper;
+
+import ${package}.domain.${className};
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import java.util.List;	
+
+/**
+ * ${tableComment} 数据层
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Repository
+@Transactional
+public interface ${className}Repository extends JpaRepository<${className}, ${primaryKey.attrType}> {
+	/**
+     * 查询${tableComment}信息
+     * 
+     * @param ${primaryKey.attrname} ${tableComment}ID
+     * @return ${tableComment}信息
+     */
+    @Query("select a from ${className} a where a.${primaryKey.attrname} = ?1")
+	${className} select${className}ById(${primaryKey.attrType} ${primaryKey.attrname});
+
+	/**
+     * 查询${tableComment}列表
+     * 
+     * @param pageable   		分页参数
+     * @return ${tableComment}	集合
+     */
+    @Query("select a from ${className} a")
+	public Page<${className}> select${className}List(Pageable pageable);
+	
+    /**
+     * 批量删除${tableComment}
+     *
+     * @param ${primaryKey.attrname}s 需要删除的数据ID
+     * @return 结果
+     */
+    @Modifying
+    @Query("delete from ${className} a where a.${primaryKey.attrname} in (?1)")
+    int delete${className}ByIds(List<${primaryKey.attrType}> ${primaryKey.attrname}s);
+
+}
