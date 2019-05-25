@@ -34,25 +34,43 @@
                 </div>
             </form>
         </div>
+        <div class="col-sm-12 conf-box">
+            <form id="gen-conf-form">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            作者：<input type="text" id="author" name="author" value="azhong"/>
+                        </li>
+                        <li>
+                            包路径：<input type="text" name="packageName" id="packageName" value="com.code.generator"/>
+                        </li>
+                        <li>
+                            前缀自动过滤：
+                            <select name="autoRemovePre" id="autoRemovePre" style="width: 80px;">
+                                <option value="0">是</option>
+                                <option value="1">否</option>
+                            </select>
+                        </li>
+                        <li>
+                            表前缀：<input type="text" name="tablePrefix" id="tablePrefix" value="sys_"/>
+                        </li>
+                        <li>
+                            持久层框架：
+                            <select name="drone" id="drone" style="width: 80px;">
+                                <option value="0">MyBatis</option>
+                                <option value="1">JPA</option>
+                            </select>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
 
         <div class="btn-group-sm" id="toolbar" role="group">
             <a class="btn btn-success" onclick="javascript:batchGenCode()">
                 <i class="fa fa-download"></i> 批量生成
             </a>
         </div>
-
-        <div class="generator-radio">
-            <label class="index-radio-title">选择持久层框架：</label>
-            <div class="col-sm-8">
-                <div class="radio-box">
-                    <input type="radio" id="MyBatis" name="drone" value="0" checked><label for="MyBatis">MyBatis</label>
-                </div>
-                <div class="radio-box">
-                    <input type="radio" id="JPA" name="drone" value="1"><label for="JPA">JPA</label>
-                </div>
-            </div>
-        </div>
-
 
         <div class="col-sm-12 select-table table-striped">
             <table id="bootstrap-table" data-mobile-responsive="true"></table>
@@ -122,12 +140,29 @@
 
     // 生成代码
     function genCode(tableName) {
-        var daoStatus = $('input[name="drone"]:checked').val();
-        var name = radioName(daoStatus);
-        $.modal.confirm("确定使用 " + name + " 持久层生成 " + tableName + " 表代码吗？", function () {
-            location.href = prefix + "/genCode/" + tableName + "/" + daoStatus;
-            layer.msg('执行成功,正在生成代码请稍后…', {icon: 1});
-        })
+        if (verifyParam()) {
+            var name = radioName($("#drone").val());
+            $.modal.confirm("确定使用 " + name + " 持久层生成 " + tableName + " 表代码吗？", function () {
+                location.href = prefix + "/genCode/" + tableName + "?" + $("#gen-conf-form").serialize();
+                layer.msg('执行成功,正在生成代码请稍后…', {icon: 1});
+            })
+        }
+    }
+
+    //批量生成代码
+    function batchGenCode() {
+        if (verifyParam()) {
+            var rows = $.table.selectColumns("tableName");
+            if (rows.length == 0) {
+                $.modal.alertWarning("请选择要生成的数据");
+                return;
+            }
+            var name = radioName($("#drone").val());
+            $.modal.confirm("确定使用 " + name + " 持久层生成 " + rows.length + "条数据吗?", function () {
+                location.href = prefix + "/batchGenCode?tables=" + rows + "&" + $("#gen-conf-form").serialize();
+                layer.msg('执行成功,正在生成代码请稍后…', {icon: 1});
+            });
+        }
     }
 
     // 根据radio 选择 选择的属性名
@@ -139,18 +174,28 @@
         }
     }
 
-    //批量生成代码
-    function batchGenCode() {
-        var rows = $.table.selectColumns("tableName");
-        if (rows.length == 0) {
-            $.modal.alertWarning("请选择要生成的数据");
-            return;
+    /**
+     * 验证参数
+     */
+    function verifyParam() {
+        var author = $("#author").val();
+        var packageName = $("#packageName").val();
+        var autoRemovePre = $("#autoRemovePre").val();
+        var tablePrefix = $("#tablePrefix").val();
+        console.log(author + " " + packageName + " " + autoRemovePre + " " + tablePrefix)
+        if (!author) {
+            layer.alert("请填写作者名 ", {icon: 2});
+            return false;
         }
-        var daoStatus = $('input[name="drone"]:checked').val();
-        $.modal.confirm("确认要生成选中的" + rows.length + "条数据吗?", function () {
-            location.href = prefix + "/batchGenCode?tables=" + rows + "&daoStatus=" + daoStatus;
-            layer.msg('执行成功,正在生成代码请稍后…', {icon: 1});
-        });
+        if (!packageName) {
+            layer.alert("请填写包路径 ", {icon: 2});
+            return false;
+        }
+        if (autoRemovePre == '0' && !tablePrefix) {
+            layer.alert("请填写表前缀 ", {icon: 2});
+            return false;
+        }
+        return true;
     }
 
 </script>

@@ -27,5 +27,6 @@
     </tr>
     <tr>
         <td><img src="https://code-generator.oss-cn-shanghai.aliyuncs.com/5.png"/></td>
+        <td><img src="https://code-generator.oss-cn-shanghai.aliyuncs.com/6.png"/></td>
     </tr>
 </table>

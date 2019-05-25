@@ -1,6 +1,7 @@
 package com.code.generator.service;
 
 
+import com.code.generator.domain.GenConf;
 import com.code.generator.domain.TableInfo;
 
 import java.util.List;
@@ -25,17 +26,17 @@ public interface IGenService {
      * 生成代码
      *
      * @param tableName 表名称
-     * @param daoStatus  选择持久层技术选型  0 Mybatis 1 jpa
+     * @param genConf   配置属性
      * @return 数据
      */
-    public byte[] generatorCode(String tableName, String daoStatus);
+    public byte[] generatorCode(String tableName, GenConf genConf);
 
     /**
      * 批量生成代码
      *
      * @param tableNames 表数组
-     * @param daoStatus   选择持久层技术选型  0 Mybatis 1 jpa
+     * @param genConf    配置属性
      * @return 数据
      */
-    public byte[] generatorCode(String[] tableNames, String daoStatus);
+    public byte[] generatorCode(String[] tableNames, GenConf genConf);
 }

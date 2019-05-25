@@ -3,8 +3,8 @@ package com.code.generator.util;
 import com.code.generator.common.constant.Constants;
 import com.code.generator.common.utils.DateUtils;
 import com.code.generator.common.utils.StringUtils;
-import com.code.generator.config.GenConfig;
 import com.code.generator.domain.ColumnInfo;
+import com.code.generator.domain.GenConf;
 import com.code.generator.domain.TableInfo;
 import org.apache.velocity.VelocityContext;
 
@@ -19,20 +19,16 @@ import java.util.Map;
  * @author azhong
  */
 public class GenUtils {
-    /**
-     * 项目空间路径
-     */
-    private static final String PROJECT_PATH = getProjectPath();
 
     /**
      * mybatis空间路径
      */
-    private static final String MYBATIS_PATH = "main/resources/mapper" ;
+    private static final String MYBATIS_PATH = "main/resources/mapper";
 
     /**
      * html空间路径
      */
-    private static final String TEMPLATES_PATH = "main/resources/templates" ;
+    private static final String TEMPLATES_PATH = "main/resources/templates";
 
     /**
      * 类型转换
@@ -64,12 +60,14 @@ public class GenUtils {
     /**
      * 获取模板信息
      *
-     * @return 模板列表
+     * @param table   表信息
+     * @param genConf 自定义配置信息
+     * @return
      */
-    public static VelocityContext getVelocityContext(TableInfo table) {
+    public static VelocityContext getVelocityContext(TableInfo table, GenConf genConf) {
         // java对象数据传递到模板文件vm
         VelocityContext velocityContext = new VelocityContext();
-        String packageName = GenConfig.getPackageName();
+        String packageName = genConf.getPackageName();
         velocityContext.put("tableName" , table.getTableName());
         velocityContext.put("tableComment" , replaceKeyword(table.getTableComment()));
         velocityContext.put("primaryKey" , table.getPrimaryKey());
@@ -79,7 +77,7 @@ public class GenUtils {
         velocityContext.put("columns" , table.getColumns());
         velocityContext.put("basePackage" , getBasePackage(packageName));
         velocityContext.put("package" , packageName);
-        velocityContext.put("author" , GenConfig.getAuthor());
+        velocityContext.put("author" , genConf.getAuthor());
         velocityContext.put("datetime" , DateUtils.getDate());
         return velocityContext;
     }
@@ -118,9 +116,9 @@ public class GenUtils {
     /**
      * 表名转换成Java类名
      */
-    public static String tableToJava(String tableName) {
-        String autoRemovePre = GenConfig.getAutoRemovePre();
-        String tablePrefix = GenConfig.getTablePrefix();
+    public static String tableToJava(String tableName, GenConf genConf) {
+        String autoRemovePre = genConf.getAutoRemovePre();
+        String tablePrefix = genConf.getTablePrefix();
         if (Constants.AUTO_REOMVE_PRE.equals(autoRemovePre) && StringUtils.isNotEmpty(tablePrefix)) {
             tableName = tableName.replaceFirst(tablePrefix, "");
         }
@@ -129,55 +127,61 @@ public class GenUtils {
 
     /**
      * 获取文件名
+     *
+     * @param template
+     * @param table
+     * @param genConf
+     * @param moduleName
+     * @return
      */
-    public static String getFileName(String template, TableInfo table, String moduleName) {
+    public static String getFileName(String template, TableInfo table, GenConf genConf, String moduleName) {
         // 小写类名
         String classname = table.getClassname();
         // 大写类名
         String className = table.getClassName();
-        String javaPath = PROJECT_PATH;
+        String javaPath = getProjectPath(genConf.getPackageName());
         String mybatisPath = MYBATIS_PATH + "/" + moduleName + "/" + className;
         String htmlPath = TEMPLATES_PATH + "/" + moduleName + "/" + classname;
 
         if (template.contains("domain.java.vm")) {
-            return javaPath + "domain" + "/" + className + ".java" ;
+            return javaPath + "domain" + "/" + className + ".java";
         }
 
         if (template.contains("Repository.java.vm")) {
-            return javaPath + "dao" + "/" + className + "Repository.java" ;
+            return javaPath + "dao" + "/" + className + "Repository.java";
         }
 
         if (template.contains("Mapper.java.vm")) {
-            return javaPath + "mapper" + "/" + className + "Mapper.java" ;
+            return javaPath + "mapper" + "/" + className + "Mapper.java";
         }
 
         if (template.contains("Service.java.vm")) {
-            return javaPath + "service" + "/" + "I" + className + "Service.java" ;
+            return javaPath + "service" + "/" + "I" + className + "Service.java";
         }
 
         if (template.contains("ServiceImpl.java.vm")) {
-            return javaPath + "service" + "/impl/" + className + "ServiceImpl.java" ;
+            return javaPath + "service" + "/impl/" + className + "ServiceImpl.java";
         }
 
         if (template.contains("Controller.java.vm")) {
-            return javaPath + "controller" + "/" + className + "Controller.java" ;
+            return javaPath + "controller" + "/" + className + "Controller.java";
         }
 
         if (template.contains("Mapper.xml.vm")) {
-            return mybatisPath + "Mapper.xml" ;
+            return mybatisPath + "Mapper.xml";
         }
 
         if (template.contains("list.html.vm")) {
-            return htmlPath + "/" + classname + ".html" ;
+            return htmlPath + "/" + classname + ".html";
         }
         if (template.contains("add.html.vm")) {
-            return htmlPath + "/" + "add.html" ;
+            return htmlPath + "/" + "add.html";
         }
         if (template.contains("edit.html.vm")) {
-            return htmlPath + "/" + "edit.html" ;
+            return htmlPath + "/" + "edit.html";
         }
         if (template.contains("sql.vm")) {
-            return classname + "Menu.sql" ;
+            return classname + "Menu.sql";
         }
         return null;
     }
@@ -201,8 +205,7 @@ public class GenUtils {
         return basePackage;
     }
 
-    public static String getProjectPath() {
-        String packageName = GenConfig.getPackageName();
+    public static String getProjectPath(String packageName) {
         StringBuffer projectPath = new StringBuffer();
         projectPath.append("main/java/");
         projectPath.append(packageName.replace("." , "/"));

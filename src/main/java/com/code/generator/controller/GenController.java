@@ -1,5 +1,6 @@
 package com.code.generator.controller;
 
+import com.code.generator.domain.GenConf;
 import com.code.generator.domain.TableInfo;
 import com.code.generator.service.IGenService;
 import com.code.generator.common.core.controller.BaseController;
@@ -28,7 +29,7 @@ public class GenController extends BaseController {
 
     @GetMapping()
     public String index() {
-        return "/index" ;
+        return "/index";
     }
 
     @PostMapping("/list")
@@ -42,9 +43,9 @@ public class GenController extends BaseController {
     /**
      * 生成代码
      */
-    @GetMapping("/genCode/{tableName}/{daoStatus}")
-    public void genCode(HttpServletResponse response, @PathVariable("tableName") String tableName, @PathVariable("daoStatus") String daoStatus) throws IOException {
-        byte[] data = genService.generatorCode(tableName, daoStatus);
+    @GetMapping("/genCode/{tableName}")
+    public void genCode(HttpServletResponse response, @PathVariable("tableName") String tableName, GenConf genConf) throws IOException {
+        byte[] data = genService.generatorCode(tableName, genConf);
         response.reset();
         response.setHeader("Content-Disposition" , "attachment; filename=\"generator.zip\"");
         response.addHeader("Content-Length" , "" + data.length);
@@ -58,9 +59,9 @@ public class GenController extends BaseController {
      */
     @GetMapping("/batchGenCode")
     @ResponseBody
-    public void batchGenCode(HttpServletResponse response, String tables, String daoStatus) throws IOException {
+    public void batchGenCode(HttpServletResponse response, String tables, GenConf genConf) throws IOException {
         String[] tableNames = Convert.toStrArray(tables);
-        byte[] data = genService.generatorCode(tableNames, daoStatus);
+        byte[] data = genService.generatorCode(tableNames, genConf);
         response.reset();
         response.setHeader("Content-Disposition" , "attachment; filename=\"generator.zip\"");
         response.addHeader("Content-Length" , "" + data.length);
