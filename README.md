@@ -2,6 +2,8 @@
 
 一直想做一款可以偷懒的项目，看了很多优秀的开源项目发现都挺好，就是没定制的，譬如我既想生成的代码数据操作层 使用 MyBatis 的同时我可能也需要使用JPA 的，所以我就整合并开发的一套自动生成代码项目，可实现通过接口访问可以实现对数据库的增删改查
 
+提取[ruoyi](https://gitee.com/zhangmrit/RuoYi)代码生成模块，增加生成到项目选项和可视化配置
+
 ## 使用说明
 
 1.  项目结构使用 spring boot 2.0x版本 通过Velocity模板引擎 实现代码的生成（java、xml、sql)支持CRUD下载 。
@@ -12,6 +14,7 @@
 6.  项目在使用MyBatis 时会自动生成xml，实体类，service、serviceImpl，controller。
 7.  项目在使用JPA 时会自动生成 实体类并添加注解，service、serviceImpl，controller。
 8.  代码生成：前后端代码的生成（java、html、xml、sql)支持CRUD下载 。
+9.  在生产实体类是默认会过滤掉 createBy、createTime、updateBy、updateTime、remark字段。
 
 
 ## 演示图
