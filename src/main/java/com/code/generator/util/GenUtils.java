@@ -23,12 +23,12 @@ public class GenUtils {
     /**
      * mybatis空间路径
      */
-    private static final String MYBATIS_PATH = "main/resources/mapper";
+    private static final String MYBATIS_PATH = "main/resources/mapper" ;
 
     /**
      * html空间路径
      */
-    private static final String TEMPLATES_PATH = "main/resources/templates";
+    private static final String TEMPLATES_PATH = "main/resources/templates" ;
 
     /**
      * 类型转换
@@ -68,17 +68,17 @@ public class GenUtils {
         // java对象数据传递到模板文件vm
         VelocityContext velocityContext = new VelocityContext();
         String packageName = genConf.getPackageName();
-        velocityContext.put("tableName" , table.getTableName());
-        velocityContext.put("tableComment" , replaceKeyword(table.getTableComment()));
-        velocityContext.put("primaryKey" , table.getPrimaryKey());
-        velocityContext.put("className" , table.getClassName());
-        velocityContext.put("classname" , table.getClassname());
-        velocityContext.put("moduleName" , getModuleName(packageName));
-        velocityContext.put("columns" , table.getColumns());
-        velocityContext.put("basePackage" , getBasePackage(packageName));
-        velocityContext.put("package" , packageName);
-        velocityContext.put("author" , genConf.getAuthor());
-        velocityContext.put("datetime" , DateUtils.getDate());
+        velocityContext.put("tableName", table.getTableName());
+        velocityContext.put("tableComment", replaceKeyword(table.getTableComment()));
+        velocityContext.put("primaryKey", table.getPrimaryKey());
+        velocityContext.put("className", table.getClassName());
+        velocityContext.put("classname", table.getClassname());
+        velocityContext.put("moduleName", getModuleName(packageName));
+        velocityContext.put("columns", table.getColumns());
+        velocityContext.put("basePackage", getBasePackage(packageName));
+        velocityContext.put("package", packageName);
+        velocityContext.put("author", genConf.getAuthor());
+        velocityContext.put("datetime", DateUtils.getDate());
         return velocityContext;
     }
 
@@ -106,9 +106,10 @@ public class GenUtils {
     public static List<String> getTemplatesByJpa() {
         List<String> templates = new ArrayList<String>();
         templates.add("vm/jpa/java/domain.java.vm");
+        templates.add("vm/jpa/java/domainDTO.java.vm");
+        templates.add("vm/jpa/java/domainVO.java.vm");
         templates.add("vm/jpa/java/Repository.java.vm");
-        templates.add("vm/jpa/java/Service.java.vm");
-        templates.add("vm/jpa/java/ServiceImpl.java.vm");
+        templates.add("vm/jpa/java/JpaService.java.vm");
         templates.add("vm/jpa/java/Controller.java.vm");
         return templates;
     }
@@ -139,49 +140,61 @@ public class GenUtils {
         String classname = table.getClassname();
         // 大写类名
         String className = table.getClassName();
-        String javaPath = getProjectPath(genConf.getPackageName());
+        String javaPath = getProjectPath(genConf.getPackageName()) + "/" ;
         String mybatisPath = MYBATIS_PATH + "/" + moduleName + "/" + className;
         String htmlPath = TEMPLATES_PATH + "/" + moduleName + "/" + classname;
 
         if (template.contains("domain.java.vm")) {
-            return javaPath + "domain" + "/" + className + ".java";
+            return javaPath + "api/" + moduleName + "/mysql/" + className + ".java" ;
+        }
+
+        if (template.contains("domainDTO.java.vm")) {
+            return javaPath + "api/" + moduleName + "/dto/" + className + "DTO.java" ;
+        }
+
+        if (template.contains("domainVO.java.vm")) {
+            return javaPath + "api/" + moduleName + "/vo/" + className + "VO.java" ;
         }
 
         if (template.contains("Repository.java.vm")) {
-            return javaPath + "dao" + "/" + className + "Repository.java";
+            return javaPath + moduleName + "/repository/" + className + "Repository.java" ;
         }
 
         if (template.contains("Mapper.java.vm")) {
-            return javaPath + "mapper" + "/" + className + "Mapper.java";
+            return javaPath + moduleName + "/mapper/" + className + "Mapper.java" ;
+        }
+
+        if (template.contains("JpaService.java.vm")) {
+            return javaPath + moduleName + "/service/" + className + "Service.java" ;
         }
 
         if (template.contains("Service.java.vm")) {
-            return javaPath + "service" + "/" + "I" + className + "Service.java";
+            return javaPath + moduleName + "/service/" + "I" + className + "Service.java" ;
         }
 
         if (template.contains("ServiceImpl.java.vm")) {
-            return javaPath + "service" + "/impl/" + className + "ServiceImpl.java";
+            return javaPath + moduleName + "/service/" + "impl/" + className + "ServiceImpl.java" ;
         }
 
         if (template.contains("Controller.java.vm")) {
-            return javaPath + "controller" + "/" + className + "Controller.java";
+            return javaPath + moduleName + "/controller/" + className + "Controller.java" ;
         }
 
         if (template.contains("Mapper.xml.vm")) {
-            return mybatisPath + "Mapper.xml";
+            return mybatisPath + "Mapper.xml" ;
         }
 
         if (template.contains("list.html.vm")) {
-            return htmlPath + "/" + classname + ".html";
+            return htmlPath + "/" + classname + ".html" ;
         }
         if (template.contains("add.html.vm")) {
-            return htmlPath + "/" + "add.html";
+            return htmlPath + "/" + "add.html" ;
         }
         if (template.contains("edit.html.vm")) {
-            return htmlPath + "/" + "edit.html";
+            return htmlPath + "/" + "edit.html" ;
         }
         if (template.contains("sql.vm")) {
-            return classname + "Menu.sql";
+            return classname + "Menu.sql" ;
         }
         return null;
     }
@@ -207,39 +220,39 @@ public class GenUtils {
 
     public static String getProjectPath(String packageName) {
         StringBuffer projectPath = new StringBuffer();
-        projectPath.append("main/java/");
-        projectPath.append(packageName.replace("." , "/"));
+        projectPath.append("java/");
+        projectPath.append(packageName.replace(".", "/"));
         projectPath.append("/");
         return projectPath.toString();
     }
 
     public static String replaceKeyword(String keyword) {
-        String keyName = keyword.replaceAll("(?:表|信息|管理)" , "");
+        String keyName = keyword.replaceAll("(?:表|信息|管理)", "");
         return keyName;
     }
 
     static {
-        javaTypeMap.put("tinyint" , "Integer");
-        javaTypeMap.put("smallint" , "Integer");
-        javaTypeMap.put("mediumint" , "Integer");
-        javaTypeMap.put("int" , "Integer");
-        javaTypeMap.put("number" , "Integer");
-        javaTypeMap.put("integer" , "integer");
-        javaTypeMap.put("bigint" , "Long");
-        javaTypeMap.put("float" , "Float");
-        javaTypeMap.put("double" , "Double");
-        javaTypeMap.put("decimal" , "BigDecimal");
-        javaTypeMap.put("bit" , "Boolean");
-        javaTypeMap.put("char" , "String");
-        javaTypeMap.put("varchar" , "String");
-        javaTypeMap.put("varchar2" , "String");
-        javaTypeMap.put("tinytext" , "String");
-        javaTypeMap.put("text" , "String");
-        javaTypeMap.put("mediumtext" , "String");
-        javaTypeMap.put("longtext" , "String");
-        javaTypeMap.put("time" , "Date");
-        javaTypeMap.put("date" , "Date");
-        javaTypeMap.put("datetime" , "Date");
-        javaTypeMap.put("timestamp" , "Date");
+        javaTypeMap.put("tinyint", "Integer");
+        javaTypeMap.put("smallint", "Integer");
+        javaTypeMap.put("mediumint", "Integer");
+        javaTypeMap.put("int", "Integer");
+        javaTypeMap.put("number", "Integer");
+        javaTypeMap.put("integer", "integer");
+        javaTypeMap.put("bigint", "Long");
+        javaTypeMap.put("float", "Float");
+        javaTypeMap.put("double", "Double");
+        javaTypeMap.put("decimal", "BigDecimal");
+        javaTypeMap.put("bit", "Boolean");
+        javaTypeMap.put("char", "String");
+        javaTypeMap.put("varchar", "String");
+        javaTypeMap.put("varchar2", "String");
+        javaTypeMap.put("tinytext", "String");
+        javaTypeMap.put("text", "String");
+        javaTypeMap.put("mediumtext", "String");
+        javaTypeMap.put("longtext", "String");
+        javaTypeMap.put("time", "Date");
+        javaTypeMap.put("date", "Date");
+        javaTypeMap.put("datetime", "Date");
+        javaTypeMap.put("timestamp", "Date");
     }
 }

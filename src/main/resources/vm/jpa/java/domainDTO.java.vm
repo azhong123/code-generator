@@ -1,0 +1,38 @@
+package ${basePackage}.api.${moduleName}.dto;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import java.io.Serializable;
+
+/**
+ * ${tableComment}
+ *
+ * @author : ${author}
+ * @create : ${datetime}
+ */
+@Data
+@ApiModel(value = "${tableComment}")
+public class ${className}DTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * $primaryKey.columnComment
+     */
+    @ApiModelProperty(value = "$primaryKey.columnComment")
+    private $primaryKey.attrType $primaryKey.attrname;
+
+#foreach ($column in $columns)
+#if($column.columnName != $primaryKey.columnName && $column.attrname != 'createBy' && $column.attrname != 'createTime' && $column.attrname !=
+        'updateBy' && $column.attrname != 'updateTime' && $column.attrname != 'remark' && $column.attrname != 'delFlag')
+    /**
+     * $column.columnComment
+     */
+    @ApiModelProperty(value = "$column.columnComment")
+    private $column.attrType $column.attrname;
+
+#end
+#end
+}

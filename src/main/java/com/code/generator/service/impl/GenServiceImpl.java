@@ -130,6 +130,7 @@ public class GenServiceImpl implements IGenService {
 
         String packageName = genConf.getPackageName();
         String moduleName = GenUtils.getModuleName(packageName);
+        genConf.setPackageName(GenUtils.getBasePackage(packageName));
 
         VelocityContext context = GenUtils.getVelocityContext(table, genConf);
 

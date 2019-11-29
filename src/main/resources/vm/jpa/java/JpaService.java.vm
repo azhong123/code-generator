@@ -1,0 +1,140 @@
+package ${basePackage}.${moduleName}.service;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import ${basePackage}.api.${moduleName}.dto.${className}DTO;
+import ${basePackage}.api.${moduleName}.mysql.${className};
+import ${basePackage}.api.${moduleName}.vo.${className}VO;
+import ${basePackage}.core.constant.CommonConstants;
+import ${basePackage}.core.exception.ServiceException;
+import ${basePackage}.${moduleName}.repository.${className}Repository;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+
+
+/**
+ * ${tableComment} 服务层实现
+ *
+ * @author : ${author}
+ * @create : ${datetime}
+ */
+@Slf4j
+@Service
+@AllArgsConstructor
+public class ${className}Service{
+
+	private final ${className}Repository ${classname}Repository;
+
+	/**
+     * 查询${tableComment}信息
+     * 
+     * @param ${primaryKey.attrname} ${tableComment}ID
+     * @return
+     */
+	public ${className}DTO select${className}ById(${primaryKey.attrType} ${primaryKey.attrname}){
+		${className} ${classname} = ${classname}Repository.select${className}ById(${primaryKey.attrname});
+		return cope${className}(${classname});
+	}
+	
+	/**
+     * 分页查询${tableComment}列表
+     * 
+     * @param currentPage 		第几页开始
+	 * @param pageSize 			每页数量
+     * @return
+     */
+	public Page<${className}> select${className}List(Integer currentPage, Integer pageSize){
+        // spring boot 2.0推荐写法
+        Pageable pageable = PageRequest.of(currentPage,pageSize);
+	    return ${classname}Repository.select${className}List(pageable);
+	}
+
+    /**
+     * 查询${tableComment}列表
+     *
+     * @return
+     */
+    public List<${className}DTO> selectAll${className}(){
+		List<${className}> ${classname}List = ${classname}Repository.findAll();
+		List<${className}DTO> result = ${classname}List.stream().map(${classname} -> cope${className}(${classname})).collect(Collectors.toList());
+		return result;
+    }
+
+	
+    /**
+     * 新增${tableComment}
+     * 
+     * @param vo 请求信息
+     * @return
+     */
+	public ${className}DTO insert${className}(${className}VO vo){
+		${className} ${classname} = new ${className}();
+		BeanUtils.copyProperties(vo, ${classname});
+		${classname}.setUpdateTime(LocalDateTime.now());
+		${classname}.setCreateTime(LocalDateTime.now());
+		${classname}.setDelFlag(CommonConstants.STATUS_NORMAL);
+		${className} result = ${classname}Repository.save(${classname});
+		return cope${className}(result);
+	}
+	
+	/**
+     * 修改${tableComment}
+     * 
+     * @param vo 请求信息
+     * @return
+     */
+	public ${className}DTO update${className}(${className}VO vo){
+		${className} ${classname} = ${classname}Repository.select${className}ById(vo.getId());
+		if (null == ${classname}) {
+			throw new ServiceException("W-001001");
+		}
+
+		${className} details = new ${className}();
+		BeanUtils.copyProperties(vo, details);
+		details.setUpdateTime(LocalDateTime.now());
+		details.setCreateTime(socialDetails.getCreateTime());
+		details.setId(${classname}.getId());
+		details.setDelFlag(CommonConstants.STATUS_NORMAL);
+		${className} result = ${classname}Repository.save(${classname});
+		return cope${className}(result);
+	}
+
+	/**
+     * 删除${tableComment}
+     * 
+     * @param ids 需要删除的数据ID
+     * @return 0 成功; 1 失败
+     */
+	public int delete${className}ByIds(String[] ids){
+		if (null != ids && ids.length <= 0) {
+			return 1;
+		}
+
+		List<Long> idList = new ArrayList<Long>();
+		for (String str : ids) {
+			${primaryKey.attrname}List.add(new ${primaryKey.attrType}(str));
+		}
+		return ${classname}Repository.delete${className}ByIds(${primaryKey.attrname}List);
+	}
+
+	/**
+     * 拷贝${tableComment}
+     *
+     * @param ${classname}
+     * @return
+     */
+	private ${className}DTO cope${className}(${className} ${classname}) {
+		${className}DTO result = new ${className}DTO();
+		BeanUtils.copyProperties(${classname}, result);
+		return result;
+	}
+	
+}

@@ -1,10 +1,9 @@
-package ${package}.mapper;
+package ${basePackage}.${moduleName}.repository;
 
-import ${package}.domain.${className};
+import ${basePackage}.api.${moduleName}.mysql.${className};
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,12 +11,11 @@ import java.util.List;
 
 /**
  * ${tableComment} 数据层
- * 
- * @author ${author}
- * @date ${datetime}
+ *
+ * @author : ${author}
+ * @create : ${datetime}
  */
 @Repository
-@Transactional
 public interface ${className}Repository extends JpaRepository<${className}, ${primaryKey.attrType}> {
 	/**
      * 查询${tableComment}信息
@@ -25,7 +23,7 @@ public interface ${className}Repository extends JpaRepository<${className}, ${pr
      * @param ${primaryKey.attrname} ${tableComment}ID
      * @return ${tableComment}信息
      */
-    @Query("select a from ${className} a where a.${primaryKey.attrname} = ?1")
+    @Query("select a from ${className} a where a.${primaryKey.attrname} = ?1 and a.delFlag = '0'")
 	${className} select${className}ById(${primaryKey.attrType} ${primaryKey.attrname});
 
 	/**
@@ -34,8 +32,8 @@ public interface ${className}Repository extends JpaRepository<${className}, ${pr
      * @param pageable   		分页参数
      * @return ${tableComment}	集合
      */
-    @Query("select a from ${className} a")
-	public Page<${className}> select${className}List(Pageable pageable);
+    @Query("select a from ${className} a where a.delFlag = '0'")
+    Page<${className}> select${className}List(Pageable pageable);
 	
     /**
      * 批量删除${tableComment}
@@ -44,7 +42,7 @@ public interface ${className}Repository extends JpaRepository<${className}, ${pr
      * @return 结果
      */
     @Modifying
-    @Query("delete from ${className} a where a.${primaryKey.attrname} in (?1)")
+    @Query("update ${className} s set s.delFlag = '1' where s.${primaryKey.attrname} in ?1 and s.delFlag = '0'")
     int delete${className}ByIds(List<${primaryKey.attrType}> ${primaryKey.attrname}s);
 
 }

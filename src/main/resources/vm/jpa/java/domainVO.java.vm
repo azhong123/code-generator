@@ -1,0 +1,49 @@
+package ${basePackage}.api.${moduleName}.vo;
+
+import ${basePackage}.core.util.validatedgroups.First;
+import ${basePackage}.core.util.validatedgroups.Second;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+/**
+ * ${tableComment}
+ *
+ * @author : ${author}
+ * @create : ${datetime}
+ */
+@Data
+@ApiModel(value = "${tableComment}")
+public class ${className}VO {
+
+    /**
+     * $primaryKey.columnComment
+     */
+    @ApiModelProperty(value = "$primaryKey.columnComment")
+     #if(($column.attrType == 'String'))
+     @NotBlank(message = "$primaryKey.columnComment 不可为空", groups = First.class)
+     #else
+     @NotNull(message = "$primaryKey.columnComment 不可为空", groups = First.class)
+     #end
+    private $primaryKey.attrType $primaryKey.attrname;
+
+#foreach ($column in $columns)
+#if($column.columnName != $primaryKey.columnName && $column.attrname != 'createBy' && $column.attrname != 'createTime' && $column.attrname !=
+        'updateBy' && $column.attrname != 'updateTime' && $column.attrname != 'remark' && $column.attrname != 'delFlag')
+    /**
+     * $column.columnComment
+     */
+    @ApiModelProperty(value = "$column.columnComment")
+    #if(($column.attrType == 'String'))
+    @NotBlank(message = "$column.columnComment 不可为空", groups = {First.class, Second.class})
+    #else
+    @NotNull(message = "$column.columnComment 不可为空", groups = {First.class, Second.class})
+    #end
+    private $column.attrType $column.attrname;
+
+#end
+#end
+}
