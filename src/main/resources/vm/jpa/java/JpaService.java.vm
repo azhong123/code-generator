@@ -100,7 +100,7 @@ public class ${className}Service{
 		${className} details = new ${className}();
 		BeanUtils.copyProperties(vo, details);
 		details.setUpdateTime(LocalDateTime.now());
-		details.setCreateTime(socialDetails.getCreateTime());
+		details.setCreateTime(${classname}.getCreateTime());
 		details.setId(${classname}.getId());
 		details.setDelFlag(CommonConstants.STATUS_NORMAL);
 		${className} result = ${classname}Repository.save(${classname});
