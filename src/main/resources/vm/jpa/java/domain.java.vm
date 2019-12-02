@@ -1,6 +1,7 @@
 package ${basePackage}.api.${moduleName}.mysql;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 #foreach ($column in $columns)
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
+@ToString
 @Table(name="${tableName}")
 public class ${className}{
 
@@ -26,7 +28,7 @@ public class ${className}{
      * $primaryKey.columnComment
      */
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "$primaryKey.columnName")
     private $primaryKey.attrType $primaryKey.attrname;
 
