@@ -50,7 +50,7 @@ public class ${className}Controller {
      */
     @PostMapping("/add")
     @ApiOperation(value = "新增${tableComment}", notes = "新增${tableComment}")
-    public ResultResponse<${className}DTO> addSave(@RequestBody @Validated(First.class) ${className}VO vo) {
+    public ResultResponse<${className}DTO> addSave(@RequestBody @Validated(Second.class) ${className}VO vo) {
         return ResultResponse.ok(${classname}Service.insert${className}(vo));
     }
 
@@ -62,7 +62,7 @@ public class ${className}Controller {
      */
     @PostMapping("/edit")
     @ApiOperation(value = "修改${tableComment}", notes = "修改${tableComment}")
-    public ResultResponse<${className}DTO> editSave(@RequestBody @Validated(Second.class) ${className}VO vo) {
+    public ResultResponse<${className}DTO> editSave(@RequestBody @Validated(First.class)) ${className}VO vo) {
         return ResultResponse.ok(${classname}Service.update${className}(vo));
     }
 
