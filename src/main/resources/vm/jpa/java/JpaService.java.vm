@@ -132,6 +132,10 @@ public class ${className}Service{
      * @return
      */
 	private ${className}DTO cope${className}(${className} ${classname}) {
+		if (null == ${classname}) {
+			return null;
+		}
+
 		${className}DTO result = new ${className}DTO();
 		BeanUtils.copyProperties(${classname}, result);
 		return result;
